@@ -16,6 +16,7 @@ class App extends Component {
     };
     this.recordPoints = this.recordPoints.bind(this);
     this.drawImageOnCanvas = this.drawImageOnCanvas.bind(this);
+    this.responseFacebook = this.responseFacebook.bind(this);
   }
 
   componentDidMount() {
@@ -27,6 +28,7 @@ class App extends Component {
   }
 
   responseFacebook(response) {
+    console.log('-----', response);
     if (response.name) {
       this.setState({ loggedIn: true })
     }
@@ -80,29 +82,44 @@ class App extends Component {
 
     return (
       <div>
-        Points Clicked
-        {points.map((point, index) =>
-          <div key={index}>
-            <span>{point.x}</span>
-            <span>{point.y}</span>
-          </div>
-        )}
+        <table>
+          <thead>
+            <tr>
+              <td>Points Clicked</td>
+            </tr>
+            <tr>
+              <td>X</td>
+              <td>Y</td>
+            </tr>
+          </thead>
+          <tbody>
+            {points.map((point, index) =>
+              <tr key={index}>
+                <td>{point.x}</td>
+                <td>{point.y}</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     );
   }
   renderLogin() {
     return (
-      <FacebookLogin
-        appId="1771436973087378"
-        autoLoad={true}
-        fields="name"
-        callback={this.responseFacebook} />
+      <div
+        hidden={this.state.loggedIn}>
+        <FacebookLogin
+          appId="1771436973087378"
+          autoLoad={true}
+          fields="name"
+          callback={this.responseFacebook} />
+      </div>
     )
   }
   renderSections() {
     return (
-      <div>
-        <div>
+      <div hidden={!this.state.loggedIn}>
+        <div style={{ display: 'inline-block', width: '45%' }}>
           <canvas
             height={this.state.height}
             width={this.state.width}
@@ -112,7 +129,7 @@ class App extends Component {
           >
           </canvas>
         </div>
-        <div>
+        <div style={{ display: 'inline-block', width: '45%' }}>
           {this.renderPoints()}
         </div>
       </div>);
@@ -125,11 +142,8 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to React</h2>
         </div>
-        {this.state.loggedIn ?
-          this.renderLogin()
-          :
-          this.renderSections()
-        }
+        {this.renderSections()}
+        {this.renderLogin()}
       </div>
     );
   }
