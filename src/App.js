@@ -28,7 +28,6 @@ class App extends Component {
   }
 
   responseFacebook(response) {
-    console.log('-----', response);
     if (response.name) {
       this.setState({ loggedIn: true })
     }
